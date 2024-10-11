@@ -9,7 +9,7 @@ const SignUpForm = () => {
     confirmPassword: "",
   });
 
-  const { signup} =useSignUp()
+  const {signup} =useSignUp()
 
   const handleSubmit = async (e) => {
     e.preventDefault();

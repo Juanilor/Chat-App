@@ -27,7 +27,7 @@ export const signup = async (req, res) => {
     });
 
     if (newUser) {
-      generateTokens(newUser._id, res)
+      generateTokens(newUser._id, res);
 
       await newUser.save();
       res.status(200).json({
@@ -40,6 +40,36 @@ export const signup = async (req, res) => {
     }
   } catch (Error) {
     console.log("Error en componente signup", Error.message);
+
+    res.status(500).json({ Error: "Error interno de servidor" });
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      user?.password || ""
+    );
+
+    if (!user || !isPasswordCorrect) {
+      return res.status(400).json({ Error: "Las credenciales son invalidas" });
+    }
+
+    generateTokens(user._id, res)
+
+    res.status(200).json({
+      _id: user._id,
+      username: user.username
+    })
+
+
+  } catch (Error) {
+    console.log("Error en componente login", Error.message);
 
     res.status(500).json({ Error: "Error interno de servidor" });
   }
