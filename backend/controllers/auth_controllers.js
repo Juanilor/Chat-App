@@ -60,16 +60,25 @@ export const login = async (req, res) => {
       return res.status(400).json({ Error: "Las credenciales son invalidas" });
     }
 
-    generateTokens(user._id, res)
+    generateTokens(user._id, res);
 
     res.status(200).json({
       _id: user._id,
-      username: user.username
-    })
-
-
+      username: user.username,
+    });
   } catch (Error) {
     console.log("Error en componente login", Error.message);
+
+    res.status(500).json({ Error: "Error interno de servidor" });
+  }
+};
+
+export const logout = (req, res) => {
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+    res.status(200).json({ message: "Sesion finalizada" });
+  } catch (Error) {
+    console.log("Error en componente logout", Error.message);
 
     res.status(500).json({ Error: "Error interno de servidor" });
   }
